@@ -107,8 +107,8 @@ public class GenStrGraphviz {
         if (nodo == null) {
             return;
         }
-        strC += "nodeC" + nodo.getInfo().getIdentificador() + "[label=\"<f0> |<f1> Id: " + nodo.getInfo().getIdentificador() 
-                +"\\n Nombre:"+nodo.getInfo().getNombre()+ "|<f2>\"];\n";
+        strC += "nodeC" + nodo.getInfo().getIdentificador() + "[label=\"<f0> |<f1> Id: " + nodo.getInfo().getIdentificador()
+                + "\\n Nombre:" + nodo.getInfo().getNombre() + "|<f2>\"];\n";
         if (nodoPadre != null) {
             strC += "nodeC" + nodoPadre.getInfo().getIdentificador() + ": " + lado + " -> nodeC" + nodo.getInfo().getIdentificador() + ":f1;\n";
         }
@@ -237,6 +237,21 @@ public class GenStrGraphviz {
             strR += "nodeHo" + name + ": " + "<f" + i + "> " + " -> " + "nodeSal" + horarioIns.getCodigoSalonStr() + ";\n";
             strR += "nodeHo" + name + ": " + "<f" + i + "> " + " -> " + "nodeEd" + horarioIns.getCodigoEdificioStr() + ";\n";
             strR += "nodeHo" + name + ": " + "<f" + i + "> " + " -> " + "nodeC" + horarioIns.getCodigoNumIdCatedStr() + ";\n";
+            ListaEnlSim<Asignacion> asignaciones = this.guardadoDatos.getAsignaciones();
+            ListaEnlSim ultimo = asignaciones;
+            while (ultimo != null) {
+                Object objErr = ultimo.getVal();
+                if (objErr != null) {
+                    Asignacion asig = (Asignacion) ultimo.getVal();
+                    if (asig.getHorario() == horarioIns) {
+                        String codigoU = asig.getCarnetStr();
+                        String codigoH = asig.getCodHorarioStr();
+                        int nota = Integer.parseInt(asig.getZona()) + Integer.parseInt(asig.getExFinal());
+                        strR += "nodeAsi" + codigoU + codigoH + "->" + "nodeHo" + name + ": " + "<f" + i + "> "+";\n";                   
+                    }
+                }
+                ultimo = ultimo.getSig();
+            }
         }
         if (!x.leaf) {
             for (int i = 0; i < x.n + 1; i++) {
@@ -335,10 +350,6 @@ public class GenStrGraphviz {
         strT += "rankdir=LR;\n";
         strT = genStrEstudiantes(strT);
         strT += "};\n";
-        strT += "subgraph cluster_3 {";
-        strT += "node [shape=box]\n";
-        strT = genStrAsignaciones(strT);
-        strT += "};\n";
         strT += "subgraph cluster_4 {\n";
         strT += "node [shape=record];\n";
         this.strC = "";
@@ -351,12 +362,16 @@ public class GenStrGraphviz {
         strT += "subgraph cluster_6 {";
         strT += "node [shape=record];";
         this.strH = "";
-        genStrTodoHorarios(this.guardadoDatos.getHorarios().getRoot(), 1);        
+        genStrTodoHorarios(this.guardadoDatos.getHorarios().getRoot(), 1);
         strT += strH;
         strT += "};\n";
         this.strR = "";
         genRelacionHorarios(this.guardadoDatos.getHorarios().getRoot(), 1);
         strT += strR;
+        strT += "subgraph cluster_3 {";
+        strT += "node [shape=box]\n";
+        strT = genStrAsignaciones(strT);
+        strT += "};\n";
         strT += "}\n";
 
         return strT;

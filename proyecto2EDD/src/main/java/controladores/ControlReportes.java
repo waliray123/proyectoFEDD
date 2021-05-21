@@ -135,7 +135,7 @@ public class ControlReportes {
                                 estado = "reprobado";
                             }
                             EstudianteNota estTemp = new EstudianteNota(asignacion.getEstudiante().getCarnet(),
-                                asignacion.getEstudiante().getCarnet(),String.valueOf(nota),estado);
+                                asignacion.getEstudiante().getNombre(),String.valueOf(nota),estado);
                             estudiantes.insertar(estTemp);
                         }
                     }

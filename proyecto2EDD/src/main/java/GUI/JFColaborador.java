@@ -28,10 +28,12 @@ import reportes.JFEstudiantesEnCurso;
  * @author user-ubunto
  */
 public class JFColaborador extends javax.swing.JFrame {
-    
+
     private GuardadoDatos guardadoDatos;
+
     /**
      * Creates new form JFColaborador
+     *
      * @param guardadoDatos
      */
     public JFColaborador(GuardadoDatos guardadoDatos) {
@@ -210,7 +212,7 @@ public class JFColaborador extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         JFCrudEstudiantes crudEstudiantes = new JFCrudEstudiantes(this.guardadoDatos);
-        crudEstudiantes.setVisible(true);        
+        crudEstudiantes.setVisible(true);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
@@ -229,9 +231,9 @@ public class JFColaborador extends javax.swing.JFrame {
         if (salon != null) {
             ControlReportes control = new ControlReportes(this.guardadoDatos);
             ListaDobEnl<Curso> cursos = control.buscarCursosQueSeDanEnSalon(salon);
-            JFCursosAsignados cursosAsig = new JFCursosAsignados( cursos, "Cursos que se imparten en el salon"+salon.getNombre());
+            JFCursosAsignados cursosAsig = new JFCursosAsignados(cursos, "Cursos que se imparten en el salon" + salon.getNombre());
             cursosAsig.setVisible(true);
-        }else{
+        } else {
             JOptionPane.showMessageDialog(null, "No existe algun estudiante con ese codigo");
         }
     }//GEN-LAST:event_jButton8ActionPerformed
@@ -242,9 +244,9 @@ public class JFColaborador extends javax.swing.JFrame {
         if (estudiante != null) {
             ControlReportes control = new ControlReportes(this.guardadoDatos);
             ListaDobEnl<Curso> cursos = control.mostrarCursosAsignados(estudiante);
-            JFCursosAsignados cursosAsig = new JFCursosAsignados( cursos, "Cursos asignados por estudiante: " + estudiante.getNombre());
+            JFCursosAsignados cursosAsig = new JFCursosAsignados(cursos, "Cursos asignados por estudiante: " + estudiante.getNombre());
             cursosAsig.setVisible(true);
-        }else{
+        } else {
             JOptionPane.showMessageDialog(null, "No existe algun estudiante con ese codigo");
         }
     }//GEN-LAST:event_jButton6ActionPerformed
@@ -255,31 +257,25 @@ public class JFColaborador extends javax.swing.JFrame {
         if (curso != null) {
             ControlReportes control = new ControlReportes(this.guardadoDatos);
             ListaDobEnl<Estudiante> estudiantes = control.mostrarEstudiantesAsignadosACurso(curso);
-            JFEstudiantesEnCurso jfestudiantes = new  JFEstudiantesEnCurso(estudiantes, "Estudiantes asignados a : "+ curso.getNombre());
+            JFEstudiantesEnCurso jfestudiantes = new JFEstudiantesEnCurso(estudiantes, "Estudiantes asignados a : " + curso.getNombre());
             jfestudiantes.setVisible(true);
-        }else{
+        } else {
             JOptionPane.showMessageDialog(null, "No existe algun curso con ese codigo");
         }
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
-        String codigo = JOptionPane.showInputDialog("Ingrese el numero del semestre");
-        Curso curso = this.guardadoDatos.buscarCursoPorCodigo(codigo);
-        if (curso != null) {
-            ControlReportes control = new ControlReportes(this.guardadoDatos);
-            ListaDobEnl<EstudianteNota> estudiantes = control.mostrarCantEstudiantesAprobados(codigo);
-            JFEstudiantesAprRep jfEstudiantes = new JFEstudiantesAprRep(estudiantes,"Estudiantes aprobados y reprobados el semestre No." + codigo);
-            jfEstudiantes.setVisible(true);
-        }else{
-            JOptionPane.showMessageDialog(null, "No existe algun curso con ese codigo");
-        }
+        String codigo = JOptionPane.showInputDialog("Ingrese el numero del semestre");        
+        ControlReportes control = new ControlReportes(this.guardadoDatos);
+        ListaDobEnl<EstudianteNota> estudiantes = control.mostrarCantEstudiantesAprobados(codigo);
+        JFEstudiantesAprRep jfEstudiantes = new JFEstudiantesAprRep(estudiantes, "Estudiantes aprobados y reprobados el semestre No." + codigo);
+        jfEstudiantes.setVisible(true);
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
         JFCrudSalones crudEstudiantes = new JFCrudSalones(this.guardadoDatos);
         crudEstudiantes.setVisible(true);
     }//GEN-LAST:event_jButton10ActionPerformed
-
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
