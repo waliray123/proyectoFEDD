@@ -7,6 +7,7 @@ package controladores;
 
 import estructuras.ArbolAvl;
 import estructuras.BTree;
+import estructuras.ListaEnlSim;
 import javax.swing.JOptionPane;
 import nodos.Llave;
 import nodos.NodoAvl;
@@ -197,9 +198,28 @@ public class ControlCrud {
             cursoIns.setSemestre(semestre);
             cursoIns.setCreditos(creditos);
             this.guardadoDatos.getCursos().insertar(cursoIns);
-            JOptionPane.showMessageDialog(null, "Curso insertadocorrectamente", "Ingreso", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Curso insertado correctamente", "Ingreso", JOptionPane.INFORMATION_MESSAGE);
         } else {
             JOptionPane.showMessageDialog(null, "Curso no insertado, ya existe un curso con ese codigo", "Ingreso", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    public void insertarSalon(String nombre,String numero,String capacidad){
+        Salon salon = this.guardadoDatos.buscarSalonPorNombre(numero);
+        if (salon == null) {
+            Edificio edificio = this.guardadoDatos.getEdificioPorNombre(nombre);
+            if (edificio != null) {
+                Salon salonIns = new Salon();
+                salonIns.setNumero(numero);
+                salonIns.setNombre(nombre);
+                salonIns.setCapacidad(capacidad);
+                edificio.insertarSalon(salonIns);
+                JOptionPane.showMessageDialog(null, "Salon insertado correctamente", "Ingreso", JOptionPane.INFORMATION_MESSAGE);
+            }else{
+                JOptionPane.showMessageDialog(null, "Salon no insertado, el edificio no existe", "Ingreso", JOptionPane.ERROR_MESSAGE);
+            }
+        }else{
+            JOptionPane.showMessageDialog(null, "Salon no insertado, ya existe un curso con ese nombre", "Ingreso", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -223,6 +243,7 @@ public class ControlCrud {
         ArbolAvl catedraticos = new ArbolAvl();
         preOrden(this.guardadoDatos.getCatedraticos().getRaiz(), catedraticos, catedratico);
         this.guardadoDatos.setCatedraticos(catedraticos);
+        JOptionPane.showMessageDialog(null, "Catedratico eliminado correctamente", "Eliminacion", JOptionPane.INFORMATION_MESSAGE);
     }
 
     public void eliminarHorario(Horario horarioElim) {
@@ -233,11 +254,34 @@ public class ControlCrud {
 
     public void eliminarEdificio(Edificio edificioElim) {
         //TODO
-
+        this.guardadoDatos.getEdificios().remove(edificioElim);
+        JOptionPane.showMessageDialog(null, "Edificio eliminado correctamente", "Eliminacion", JOptionPane.INFORMATION_MESSAGE);
     }
 
     public void eliminarCurso(Curso curso) {
         //TODO
+        this.guardadoDatos.getCursos().remove(curso);
+        JOptionPane.showMessageDialog(null, "Curso eliminado correctamente", "Eliminacion", JOptionPane.INFORMATION_MESSAGE);
+    }
+    
+    public void eliminarSalon(Salon salonElim){
+        Edificio edificio = this.guardadoDatos.getEdificioPorNombre(salonElim.getNombre());
+        ListaEnlSim<Salon> salones = edificio.getSalones();
+        ListaEnlSim ultimo = salones;
+        int cont = 0;
+        while (ultimo != null) {            
+            Object objErr = ultimo.getVal();
+            if (objErr != null) {
+                Salon salonRev = (Salon) ultimo.getVal();
+                if (salonRev == salonElim) {
+                    salones.remove(cont);
+                    break;
+                }
+            }
+            cont++;
+            ultimo = ultimo.getSig();
+        }  
+        JOptionPane.showMessageDialog(null, "Salon eliminado correctamente", "Eliminacion", JOptionPane.INFORMATION_MESSAGE);
     }
 
     // Display
@@ -332,5 +376,17 @@ public class ControlCrud {
         curso.setSemestre(semestre);
         curso.setCreditos(creditos);
         JOptionPane.showMessageDialog(null, "Curso modificado correctamente", "Modificacion", JOptionPane.INFORMATION_MESSAGE);
+    }
+    
+    public void modificarSalon(String nombre,String capacidad,Salon salonMod){
+        Edificio edificio = this.guardadoDatos.getEdificioPorNombre(nombre);
+        if (edificio != null) {
+            salonMod.setCapacidad(capacidad);
+            salonMod.setNombre(nombre);
+            eliminarSalon(salonMod);
+            edificio.insertarSalon(salonMod);
+        }else{
+            JOptionPane.showMessageDialog(null, "Salon no modificado, edificio no existente", "Modificacion", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }

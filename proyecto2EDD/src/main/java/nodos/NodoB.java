@@ -10,14 +10,10 @@ package nodos;
  * @author user-ubunto
  */
 public class NodoB<Tipo> {
-
-    //Este es el nodo que se usa para el arbol pero es robado asi que solo lo modifique un poco
+    
     
     public int n;
-//    int key[] = new int[2 * T - 1];
-//    public int key[];
     public Llave<Tipo> key[];
-//    NodoB<Tipo> child[] = new NodoB[2 * T];
     public NodoB<Tipo> child[];
     public boolean leaf = true;
     public Tipo valor;
