@@ -1,0 +1,201 @@
+package analizadores;
+
+import java_cup.runtime.*;
+import objetos.ErrorCom;
+import objetos.Usuario;
+import objetos.Edificio;
+import objetos.Salon;
+import objetos.Curso;
+import objetos.Asignacion;
+import objetos.Catedratico;
+import objetos.Estudiante;
+import objetos.Horario;
+import estructuras.ListaEnlSim;
+import estructuras.ListaDobEnl;
+import estructuras.ListaCircDobEnl;
+
+
+parser code {:
+
+    ListaEnlSim<ErrorCom> erroresCom;       
+    ListaCircDobEnl<Edificio> edificios;
+    ListaCircDobEnl<Curso> cursos;
+    ListaEnlSim<Salon> salones;
+    //ListaDobEnl<Usuario> usuarios; 
+    ListaEnlSim<Usuario> usuarios; 
+    ListaEnlSim<Estudiante> estudiantes;
+    ListaEnlSim<Catedratico> catedraticos;
+    ListaEnlSim<Horario> horarios;
+    ListaEnlSim<Asignacion> asignaciones;
+
+	public ParserSAC(LexerSAC lex) {
+		super(lex);
+        this.erroresCom = lex.getErroresCom();
+        this.usuarios = new ListaEnlSim<>();
+        this.edificios = new ListaCircDobEnl<>();
+        this.cursos = new ListaCircDobEnl<>();
+        this.salones = new ListaEnlSim<>();
+        this.estudiantes = new ListaEnlSim<>();
+        this.catedraticos = new ListaEnlSim<>();
+        this.horarios = new ListaEnlSim<>();
+        this.asignaciones = new ListaEnlSim<>();
+	}
+
+    /**
+     * Método al que se llama automáticamente ante algún error sintactico.
+     **/ 
+    public void syntax_error(Symbol s){ 
+        erroresCom.add(erroresCom,new ErrorCom("Sintactico","No se esperaba Componente",String.valueOf(s.left),String.valueOf(s.right),String.valueOf(s.value)));
+    } 
+
+    /**
+     * Método al que se llama automáticamente ante algún error sintáctico 
+     * en el que ya no es posible una recuperación de errores.
+     **/ 
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception{ 
+        erroresCom.add(erroresCom,new ErrorCom("Sintactico","Error sintactico Irrecuperable",String.valueOf(s.left),String.valueOf(s.right),String.valueOf(s.value)));
+    }
+
+    private void insertarUsuario(String codigo, String nombre, String contrasenia, String tipo){
+        Usuario usuarioIns = new Usuario();
+        usuarioIns.setId(codigo);
+        usuarioIns.setNombre(nombre);
+        usuarioIns.setContrasenia(contrasenia);
+        usuarioIns.setTipo(tipo);
+        this.usuarios.add(this.usuarios,usuarioIns);
+    }    
+
+    private void insertarEdificio(String nombre){
+        Edificio edificioIns = new Edificio();
+        edificioIns.setNombre(nombre);
+        edificios.insertar(edificioIns);
+    }
+
+    private void insertarSalon(String nombre,String numero, String capacidad){
+        Salon salonIns = new Salon();
+        salonIns.setNombre(nombre);
+        salonIns.setNumero(numero);
+        salonIns.setCapacidad(capacidad);
+        this.salones.add(this.salones,salonIns);
+    }
+
+    private void insertarCurso(String codigo, String nombre, String semestre, String creditos){
+        Curso cursoIns = new Curso();
+        cursoIns.setCodigo(codigo);
+        cursoIns.setNombre(nombre);
+        cursoIns.setSemestre(semestre);
+        cursoIns.setCreditos(creditos);
+        this.cursos.insertar(cursoIns);
+    }
+
+    private void insertarEstudiante(String carnet, String nombre, String direccion){
+        Estudiante estudianteIns = new Estudiante();
+        estudianteIns.setCarnet(carnet);
+        estudianteIns.setNombre(nombre);
+        estudianteIns.setDireccion(direccion);
+        this.estudiantes.add(this.estudiantes,estudianteIns);
+    }
+
+    private void insertarCatedratico(String identificador, String nombre, String direccion){
+        Catedratico catedraticoIns = new Catedratico();
+        catedraticoIns.setIdentificador(identificador);
+        catedraticoIns.setNombre(nombre);
+        catedraticoIns.setDireccion(direccion);
+        this.catedraticos.add(this.catedraticos,catedraticoIns);
+    }
+
+    private void insertarHorarios(String codigo, String codigoSalon, String codigoCurso, String codigoEdificio, String codigoNumId, String periodo){
+        Horario horarioIns = new Horario();
+        horarioIns.setCodigo(codigo);
+        horarioIns.setCodigoSalonStr(codigoSalon);
+        horarioIns.setCodigoCursoStr(codigoCurso);
+        horarioIns.setCodigoEdificioStr(codigoEdificio);
+        horarioIns.setCodigoNumIdCatedStr(codigoNumId);
+        horarioIns.setPeriodo(periodo);
+        this.horarios.add(this.horarios,horarioIns);
+    }
+
+    private void insertarAsignacion(String carnet, String codCurso, String zona, String exFinal){
+        Asignacion asignacionIns = new Asignacion();
+        asignacionIns.setCarnetStr(carnet);
+        asignacionIns.setCodHorarioStr(codCurso);
+        asignacionIns.setZona(zona);
+        asignacionIns.setExFinal(exFinal);
+        this.asignaciones.add(this.asignaciones, asignacionIns);
+
+    }
+    protected int error_sync_size() {
+		return 2;
+	}
+
+    public ListaEnlSim<ErrorCom> getErroresCom(){
+        return this.erroresCom;
+    }
+
+    public ListaEnlSim<Usuario> getUsuarios(){
+        return this.usuarios;
+    }
+
+    public ListaCircDobEnl<Edificio> getEdificios(){
+        return this.edificios;
+    }
+
+    public ListaEnlSim<Salon> getSalones(){
+        return this.salones;
+    }
+
+    public ListaCircDobEnl<Curso> getCursos(){
+        return this.cursos;
+    }
+
+    public ListaEnlSim<Estudiante> getEstudiantes(){
+        return this.estudiantes;
+    }
+
+    public ListaEnlSim<Catedratico> getCatedraticos(){
+        return this.catedraticos;
+    }
+
+    public ListaEnlSim<Asignacion> getAsignaciones(){
+        return this.asignaciones;
+    }
+
+    public ListaEnlSim<Horario> getHorarios(){
+        return this.horarios;
+    }
+:}
+
+/* Terminals (tokens returned by the scanner). */
+terminal 	String NUM,PAL,TIPO;
+terminal 	COMA,PARI,PARD,PUNTCOMA;
+terminal    USUARIO,EDIFICIO,SALON,CURSO,ESTUDIANTE,CATEDRATICO,HORARIO,ASIGNAR;
+
+
+
+
+/* Non-Terminals (created scanner). */
+non terminal  inicio;
+
+
+/* The grammar : */
+
+start with inicio;
+
+inicio ::= 
+            USUARIO PARI NUM:id COMA PAL:nomb COMA PAL:contr COMA TIPO:tipo PARD PUNTCOMA {:insertarUsuario(id,nomb,contr,tipo);:} inicio
+        |   EDIFICIO PARI PAL:nomb PARD PUNTCOMA {:insertarEdificio(nomb);:} inicio
+        |   SALON PARI PAL:nomb COMA NUM:numb COMA NUM:cap PARD PUNTCOMA {:insertarSalon(nomb,numb,cap);:} inicio
+        |   CURSO PARI NUM:cod COMA PAL:nomb COMA NUM:sems COMA NUM:cred PARD PUNTCOMA {:insertarCurso(cod,nomb,sems,cred);:} inicio
+        |   ESTUDIANTE PARI NUM:carnet COMA PAL:nomb COMA PAL:dire PARD PUNTCOMA {:insertarEstudiante(carnet,nomb,dire);:} inicio
+        |   CATEDRATICO PARI NUM:iden COMA PAL:nomb COMA PAL:dire PARD PUNTCOMA {:insertarCatedratico(iden,nomb,dire);:} inicio
+        |   HORARIO PARI NUM:cod COMA PAL:per COMA PAL:dia COMA NUM:codCurso COMA NUM:codSalon COMA PAL:codEd COMA NUM:numId PARD PUNTCOMA {:insertarHorarios(cod,codSalon,codCurso,codEd,numId,per);:}inicio
+        |   ASIGNAR PARI NUM:carnet COMA NUM:codHorario COMA NUM:zona COMA NUM:exFinal PARD PUNTCOMA {:insertarAsignacion(carnet,codHorario,zona,exFinal);:} inicio
+        |
+        
+;
+/*
+palab ::=
+            PAL
+        |   COMDOB PAL COMDOB
+;
+*/
